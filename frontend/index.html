@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>eBay Lite Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>eBay Lite Marketplace</h1>
+
+<div class="container">
+
+    <h2>Active Listings</h2>
+    <table id="itemsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Item</th>
+                <th>Current Bid</th>
+                <th>Buy Now</th>
+                <th>Expires</th>
+                <th>Bid</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+
+<div class="container">
+    <h2>List New Item</h2>
+
+    <input id="itemName" placeholder="Item Name">
+    <input id="startingPrice" placeholder="Starting Price">
+    <input id="buyNow" placeholder="Buy Now Price">
+
+    <button onclick="createItem()">List Item</button>
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
