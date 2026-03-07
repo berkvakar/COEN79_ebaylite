@@ -10,8 +10,6 @@
 
 #include <string>
 #include <vector>
-#include "History.h"
-#include "Watchlist.h"
 #include "Item.h"
 
 
@@ -23,8 +21,8 @@ private:
     std::string password;
 
     // User's history and watchlist
-    std::vector<history> history; 
-    std::vector<watchlist> watchlist;
+    std::vector<Item> history; 
+    std::vector<Item> watchlist;
 
     // Items sold and bid on by the user
     std::vector<Item> sold;
@@ -41,12 +39,9 @@ public:
     std::string getPassword() const;
     void setPassword(const std::string& password);
 
-    std::string getEmail() const;
-    void setEmail(const std::string& email);
-
     // History and Watchlist management
-    void addToHistory(const history& entry);
-    void addToWatchlist(const watchlist& entry);
+    void addToHistory(const Item& entry);
+    void addToWatchlist(const Item& entry);
 
     // Item management
     void addSoldItem(const Item& item);
