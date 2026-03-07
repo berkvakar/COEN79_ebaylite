@@ -35,7 +35,7 @@ class Item {
         double getBuynowPrice() const;
         void setBuynowPrice(double price);
 
-        Bids getBidsList(int sortOption) const; // Method to retrieve bids sorted by the specified option
+        Bids getBidsList() const; // Method to retrieve bids sorted by the specified option
         void addBid(double bid);
 
         bool isSold() const;
