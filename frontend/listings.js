@@ -1,45 +1,34 @@
-<!DOCTYPE html>
-<html>
+let items = [
+{ id:1, name:"Gaming Laptop", bid:800, buyNow:1200, expires:"2h" },
+{ id:2, name:"iPhone 14", bid:600, buyNow:900, expires:"1h" }
+];
 
-<head>
-<title>User Profile</title>
-<link rel="stylesheet" href="style.css">
-</head>
+function renderListings(){
 
-<body>
+const table = document.querySelector("#itemsTable tbody");
+table.innerHTML = "";
 
-<header>
+items.forEach(item => {
 
-<h1>User Profile</h1>
+const row = `
+<tr>
+<td>${item.id}</td>
+<td>${item.name}</td>
+<td>$${item.bid}</td>
+<td>$${item.buyNow}</td>
+<td>${item.expires}</td>
+<td>
+<a href="item.html?id=${item.id}">
+<button>View</button>
+</a>
+</td>
+</tr>
+`;
 
-<nav>
-<a href="index.html">Listings</a>
-<a href="profile.html">Profile</a>
-</nav>
+table.innerHTML += row;
 
-</header>
+});
 
-<div class="container">
+}
 
-<h2>Welcome User</h2>
-
-<h3>Watchlist</h3>
-
-<ul id="watchlist">
-<li>Gaming Laptop</li>
-<li>iPhone 14</li>
-</ul>
-
-<h3>Auction History</h3>
-
-<ul>
-<li>Won Guitar - $250</li>
-<li>Lost Laptop - $920</li>
-</ul>
-
-</div>
-
-<script src="profile.js"></script>
-
-</body>
-</html>
+renderListings();
