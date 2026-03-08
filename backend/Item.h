@@ -1,52 +1,51 @@
-/** Item Class
- * 
- * 
- */
 #ifndef ITEM_H
 #define ITEM_H
 
 #include <string>
 #include <ctime>
 #include "Bids.h"
+#include "User.h"
 
-
-class User;	//forward declaration (used to prevent circular declaration)
 class Item {
-    private:
 
-        std::string name;
-        std::string description;
-        double buynow_price;
-        Bids bidsList;
-        bool sold;
-        User* seller;
-        std::time_t endTime; 
+private:
+    std::string name;
+    std::string description;
+    double buynow_price;
+    Bids bidsList;
+    bool sold;
+    User seller;
+    std::time_t endTime;
 
-    public:
-        Item(std::string name, std::string description, double buynow_price, User seller, std::time_t endTime = std::time(nullptr) + 7 * 24 * 60 * 60); // Default end time is 7 days from now
-        ~Item();
+public:
 
-        // Getters and Setters
-        std::string getName() const;
-        void setName(const std::string& name);
+    Item(std::string name,
+         std::string description,
+         double buynow_price,
+         User seller,
+         std::time_t endTime = std::time(nullptr) + 7*24*60*60);
 
-        std::string getDescription() const;
-        void setDescription(const std::string& description);
+    ~Item();
 
-        double getBuynowPrice() const;
-        void setBuynowPrice(double price);
+    std::string getName() const;
+    void setName(const std::string& name);
 
-        Bids getBidsList() const; // Method to retrieve bids sorted by the specified option
-	void addBid(double bid, const std::string& bidderUsername);
+    std::string getDescription() const;
+    void setDescription(const std::string& description);
 
-        bool isSold() const;
-        void markAsSold();
+    double getBuynowPrice() const;
+    void setBuynowPrice(double price);
 
-        User* getSeller() const;
-        //SIMULATION FUNCTIONS
-        bool isExpired() const;
-        void closeAuction();
+    Bids getBidsList() const;
+    void addBid(double bid, const std::string& bidderUsername);
+
+    bool isSold() const;
+    void markAsSold();
+
+    User getSeller() const;
+
+    bool isExpired() const;
+    void closeAuction();
 };
 
-#endif // ITEM_H
-
+#endif

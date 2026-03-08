@@ -1,31 +1,29 @@
-function loadListings() {
+window.onload = function() {
 
-	fetch("http://localhost:18080/items")
-	.then(function(response) {
-	return response.json();
-	});
+fetch("http://localhost:18080/listingsAPI")
+.then(response => response.json())
+.then(items => {
 
-	.then(function(items) {
+const table = document.querySelector("#itemsTable tbody");
 
-	var tbody = document.querySelector("#itemsTable tbody");
-	tbody.innerHTML = "";
+items.forEach((item, i) => {
 
-	for (var i = 0; i < items.length; i++) {
+const row = document.createElement("tr");
 
-		var row =
-			"<tr>" +
-			"<td>" + i + "</td>" +
-			"<td>" + items[i].name + "</td>" +
-			"<td>$" + items[i].price + "</td>" +
-			"<td>$" + items[i].price + "</td>" +
-			"<td>Active</td>" +
-			"<td><a href='item.html?id=" + i + "'>View</a></td>" +
-			"</tr>";
-	
-			tbody.innerHTML += row;
-		}
-	});
-	
-}
+row.innerHTML = `
+<td>${i}</td>
+<td>${item.name}</td>
+<td>$${item.price}</td>
+<td>$${item.price}</td>
+<td>2h</td>
+<td><a href="item.html?id=${i}">View</a></td>
+`;
 
-window.onload = loadListings;
+table.appendChild(row);
+
+});
+
+})
+.catch(err => console.log(err));
+
+};

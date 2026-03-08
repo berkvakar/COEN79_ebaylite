@@ -6,42 +6,43 @@ const items = [
 
 function loadItem(){
 
-const params = new URLSearchParams(window.location.search);
-const itemId = params.get("id");
+	const params = new URLSearchParams(window.location.search);
+	const itemId = params.get("id");
 
-const item = items.find(i => i.id == itemId);
+	const item = items.find(i => i.id == itemId);
 
-if(!item){
-console.log("No item selected");
-return;
-}
+	if(!item){
+		console.log("No item selected");
+		return;
+	}
 
-document.getElementById("itemName").innerText = item.name;
-document.getElementById("currentBid").innerText = item.bid;
-document.getElementById("buyNow").innerText = item.buyNow;
-document.getElementById("expires").innerText = item.expires;
+	document.getElementById("itemName").innerText = item.name;
+	document.getElementById("currentBid").innerText = item.bid;
+	document.getElementById("buyNow").innerText = item.buyNow;
+	document.getElementById("expires").innerText = item.expires;
 
-window.currentItem = item;
+	window.currentItem = item;
 
 }
 
 function placeBid(){
 
-const amount = Number(document.getElementById("bidAmount").value);
+	const amount = Number(document.getElementById("bidAmount").value);
 
-if(amount > window.currentItem.bid){
+	if(amount > window.currentItem.bid){
 
-window.currentItem.bid = amount;
+		window.currentItem.bid = amount;
 
-document.getElementById("currentBid").innerText = amount;
+		document.getElementById("currentBid").innerText = amount;
 
-alert("Bid accepted!");
+		alert("Bid accepted!");
 
-}else{
+	}
+	else{
 
-alert("Bid must be higher than current bid");
+		alert("Bid must be higher than current bid");
 
-}
+	}
 
 }
 
