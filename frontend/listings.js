@@ -1,26 +1,7 @@
-// sample auction items
 const items = [
-{
-id:1,
-name:"Gaming Laptop",
-bid:800,
-buyNow:1200,
-expires:"2h"
-},
-{
-id:2,
-name:"iPhone 14",
-bid:600,
-buyNow:900,
-expires:"1h"
-},
-{
-id:3,
-name:"Electric Guitar",
-bid:200,
-buyNow:350,
-expires:"45m"
-}
+{ id:1, name:"Gaming Laptop", bid:800, buyNow:1200, expires:"2h" },
+{ id:2, name:"iPhone 14", bid:600, buyNow:900, expires:"1h" },
+{ id:3, name:"Electric Guitar", bid:200, buyNow:350, expires:"45m" }
 ];
 
 function renderListings(){
@@ -39,9 +20,7 @@ const row = `
 <td>$${item.buyNow}</td>
 <td>${item.expires}</td>
 <td>
-<a href="item.html?id=${item.id}">
-<button>View</button>
-</a>
+<a href="item.html?id=${item.id}">View</a>
 </td>
 </tr>
 `;
