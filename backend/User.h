@@ -42,7 +42,7 @@ public:
 
     std::string getEmail() const;
     void setEmail(const std::string& email);
-ok
+    
     // History and Watchlist management
     void addToHistory(const Item& entry);
     void addToWatchlist(const Item& entry);
