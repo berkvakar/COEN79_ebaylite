@@ -21,3 +21,13 @@ bool Userbase::userExists(const std::string& username) const
 {
     return users.find(username) != users.end();
 }
+
+bool Userbase::removeUser(const std::string& username){
+    auto it = users.find(username);
+
+    if(it == users.end())
+        return false;
+
+    users.erase(username);
+    return true;
+}

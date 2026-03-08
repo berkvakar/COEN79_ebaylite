@@ -17,6 +17,7 @@ class Userbase {
         void addUser(const User& user);
         User* getUser(const std::string& username);
         bool userExists(const std::string& username) const;
+        bool removeUser(const std::string& username);
 };
 
 #endif // USERBASE_H
