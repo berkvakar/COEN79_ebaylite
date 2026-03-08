@@ -8,8 +8,9 @@
 #include <string>
 #include <ctime>
 #include "Bids.h"
-#include "User.h"
 
+
+class User;	//forward declaration (used to prevent circular declaration)
 class Item {
     private:
 
@@ -18,7 +19,7 @@ class Item {
         double buynow_price;
         Bids bidsList;
         bool sold;
-        User seller;
+        User* seller;
         std::time_t endTime; 
 
     public:
@@ -41,7 +42,7 @@ class Item {
         bool isSold() const;
         void markAsSold();
 
-        User getSeller() const;
+        User* getSeller() const;
         //SIMULATION FUNCTIONS
         bool isExpired() const;
         void closeAuction();
