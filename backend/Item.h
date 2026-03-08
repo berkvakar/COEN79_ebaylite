@@ -23,8 +23,7 @@ class Item {
         std::time_t endTime; 
 
     public:
-        Item(std::string name, std::string description, double buynow_price, User seller, std::time_t endTime = std::time(nullptr) + 7 * 24 * 60 * 60); // Default end time is 7 days from now
-        ~Item();
+        Item(std::string name, User* seller, double buynow_price, std::time_t endTime = std::time(nullptr) + 7 * 24 * 60 * 60, std::string description = ""); // Default end time is 7 days from now
 
         // Getters and Setters
         std::string getName() const;
@@ -37,7 +36,7 @@ class Item {
         void setBuynowPrice(double price);
 
         Bids getBidsList() const; // Method to retrieve bids sorted by the specified option
-	void addBid(double bid, const std::string& bidderUsername);
+	    void addBid(double bid, const std::string& bidderUsername);
 
         bool isSold() const;
         void markAsSold();
