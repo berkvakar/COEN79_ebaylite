@@ -2,38 +2,33 @@
 <html>
 
 <head>
-<title>Item Details</title>
+<title>User Profile</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
-
-<h1>Item Details</h1>
+<h1>User Profile</h1>
 
 <nav>
 <a href="index.html">Listings</a>
 <a href="profile.html">Profile</a>
 </nav>
 
-</header>
-
 <div class="container">
 
-<h2 id="itemName"></h2>
+<h2 id="userName">Demo User</h2>
 
-<p>Current Bid: $<span id="currentBid"></span></p>
-<p>Buy Now Price: $<span id="buyNow"></span></p>
-<p>Expires: <span id="expires"></span></p>
+<h3>Watchlist</h3>
+<ul id="watchlist"></ul>
 
-<input id="bidAmount" placeholder="Enter bid">
-
-<button onclick="placeBid()">Place Bid</button>
+<h3>Auction History</h3>
+<ul id="history"></ul>
 
 </div>
 
-<script src="item.js"></script>
+<script src="profile.js"></script>
 
 </body>
+
 </html>
