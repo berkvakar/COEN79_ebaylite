@@ -30,6 +30,7 @@ private:
     std::vector<Item> bids;
     
 public:
+    User() = default;
     User(std::string username, std::string password, std::string email);
     ~User();
 

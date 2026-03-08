@@ -37,7 +37,7 @@ class Item {
         void setBuynowPrice(double price);
 
         Bids getBidsList() const; // Method to retrieve bids sorted by the specified option
-        void addBid(double bid);
+	void addBid(double bid, const std::string& bidderUsername);
 
         bool isSold() const;
         void markAsSold();
