@@ -7,7 +7,7 @@
 
 User::User(std::string username, std::string password){
     this->username = username;
-    this-->password = password;
+    this->password = password;
     history = std::vector<Item>();
     watchlist = std::vector<Item>();
     sold = std::vector<Item>();
