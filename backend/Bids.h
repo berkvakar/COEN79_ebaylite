@@ -6,6 +6,7 @@
 #ifndef BIDS_H
 #define BIDS_H
 #include <queue>
+#include <vector>
 
 class Bids {
 private:
@@ -14,6 +15,7 @@ public:
     void addBid(double bid, const std::string& bidderUsername); //O(log n) to add a bid
     double getHighestBid() const; //O(1) access to the highest bid
     bool isEmpty() const; 
+    std::vector<std::pair<double, std::string>> getAllBids() const; // Method to retrieve all bids sorted
 };
 
 #endif // BIDS_H
