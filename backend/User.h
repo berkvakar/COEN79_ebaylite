@@ -27,12 +27,11 @@ private:
 
     // Items sold and bid on by the user
     std::vector<Item> sold;
-    std::vector<Item> bids;
+    std::vector<std::pair<double, Item>> bids;
     
 public:
     User() = default;
-    User(std::string username, std::string password;
-    ~User();
+    User(std::string username, std::string password);
 
     // Getters and Setters
     std::string getUsername() const;
@@ -46,9 +45,15 @@ public:
     void addToHistory(const Item& entry);
     void addToWatchlist(const Item& entry);
 
+    std::vector<Item> getHistory() const;
+    std::vector<Item> getWatchlist() const;
+
     // Item management
     void addSoldItem(const Item& item);
-    void addBidItem(const Item& item);
+    void addBidItem(const double& bidAmount, const Item& item);
+
+    std::vector<Item> getSoldItems() const;
+    std::vector<std::pair<double, Item>> getBidItems() const;
 };
 
-#endif
+#endif // USER_H
