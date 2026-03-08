@@ -31,7 +31,7 @@ private:
     
 public:
     User() = default;
-    User(std::string username, std::string password, std::string email);
+    User(std::string username, std::string password;
     ~User();
 
     // Getters and Setters
@@ -41,8 +41,6 @@ public:
     std::string getPassword() const;
     void setPassword(const std::string& password);
 
-    std::string getEmail() const;
-    void setEmail(const std::string& email);
     
     // History and Watchlist management
     void addToHistory(const Item& entry);

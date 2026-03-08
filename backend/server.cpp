@@ -1,52 +1,47 @@
-/* server.cpp
- * Stress test
- * Generates 1000 items and adds random bids to each
- * 
- */ 
+/** File that will run the server and handle incoming requests from frontend
+ * This is where the actual applications will run and where the marketplace and userbase objects will be created and manipulated. 
+ */
 
-
-#include <iostream> 
-#include <cstdlib> 
-#include <ctime> 
-#include <string>
-#include <vector>
-
+ //includes
+#include <asio.hpp> 
+namespace asio { typedef io_context io_service; }
+#include "crow_all.h"
+#include "Userbase.h"
 #include "Marketplace.h"
-#include "User.h"
 #include "Item.h"
 
-int main()
-{
-	std::srand(std::time(nullptr));
-
-	Marketplace market;					//marketplace obj
-	std::vector<User> users;				//list of generated users
-	
-	//stress test generates 1000 items
-	for(int i = 0; i< 10;i++)
-	{
-		std::string username = "user" + std::to_string(i);
-		users.push_back(User(username, "password", username + "@email.com"));
-	}
-	User seller = users[0];
-	for(int i = 0; i<1000;i++)
-	{
-		//create an Item with unique name(item0...item999), random buy-now price
-		Item item("Item" + std::to_string(i), "Random Description", rand() % 100 + 50, seller);
-		
-		//this loop generates the random bidding
-		for(int j=0; j<3; j++)
-		{
-			double bid = rand() % 200 + 20;
-
-			int bidderIndex = rand() % users.size();
-			std::string bidderName = users[bidderIndex].getUsername();
-
-			item.addBid(bid, bidderName);
-		}
-		market.addItem(item);			//sends item to market
-	}
-	std::cout<<"Stress test completed with 1000 items." << std::endl;
-	return 0; 
+/** Returns true if user was created, false if username already exists. */
+bool createUser(Userbase& userbase, const std::string& username, const std::string& password) {
+    if (userbase.userExists(username))
+        return false;
+    userbase.addUser(User(username, password));
+    return true;
 }
-	
+
+ int main(){
+        crow::SimpleApp app;
+
+        Marketplace market; //create marketplace object
+        Userbase userbase; //create userbase object
+
+       //Generate 10 users
+       for (int i = 0; i < 10; i++) {
+              User dummyuser = User("user" + std::to_string(i), "password" + std::to_string(i));
+              userbase.addUser(dummyuser);
+       }
+
+       //create user route that will create a new user
+       // returns true if user was created, false if username already exists
+       //use case: when user signs up, frontend will send a POST request to this route to create a new user
+        CROW_ROUTE(app, "/createuser")
+        .methods("POST"_method)
+        ([&userbase](const crow::request& req) {
+            auto body = crow::json::load(req.body);
+            std::string username = std::string(body["username"].s());
+            std::string password = std::string(body["password"].s());
+            bool ok = createUser(userbase, username, password);
+            return crow::response(crow::json::wvalue(ok));
+        });
+    
+        app.port(18080).multithreaded().run();
+ }
