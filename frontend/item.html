@@ -2,38 +2,38 @@
 <html>
 
 <head>
-<title>Item Details</title>
-<link rel="stylesheet" href="style.css">
+    <title>Item Details</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
+    <header>
+        <h1>eBay Lite</h1>
 
-<h1>Item Details</h1>
+        <nav>
+            <a href="/marketplace.html">Listings</a>
+            <a href="/profile.html">Profile</a>
+        </nav>
+    </header>
 
-<nav>
-<a href="index.html">Listings</a>
-<a href="profile.html">Profile</a>
-</nav>
+    <div class="container">
 
-</header>
+        <h2>Item Details</h2>
+        <h3 id="itemName"></h3>
 
-<div class="container">
+        <p>Current Bid: $<span id="currentBid"></span></p>
+        <p>Buy Now Price: $<span id="buyNow"></span></p>
+        <p>Expires: <span id="expires"></span></p>
 
-<h2 id="itemName"></h2>
+        <input id="bidAmount" placeholder="Enter bid">
 
-<p>Current Bid: $<span id="currentBid"></span></p>
-<p>Buy Now Price: $<span id="buyNow"></span></p>
-<p>Expires: <span id="expires"></span></p>
+        <button onclick="placeBid()">Place Bid</button>
 
-<input id="bidAmount" placeholder="Enter bid">
+    </div>
 
-<button onclick="placeBid()">Place Bid</button>
-
-</div>
-
-<script src="item.js"></script>
+    <script src="item.js"></script>
 
 </body>
+
 </html>

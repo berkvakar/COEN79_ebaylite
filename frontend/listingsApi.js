@@ -16,7 +16,7 @@ row.innerHTML = `
 <td>$${item.price}</td>
 <td>$${item.price}</td>
 <td>2h</td>
-<td><a href="item.html?id=${i}">View</a></td>
+<td><a href="/item.html?id=${i}">View</a></td>
 `;
 
 table.appendChild(row);

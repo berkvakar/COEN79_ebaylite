@@ -18,7 +18,7 @@ row.innerHTML = `
 <td>$${item.bid}</td>
 <td>$${item.buyNow}</td>
 <td>${item.expires}</td>
-<td><a href="item.html?id=${item.id}">View</a></td>
+<td><a href="/item.html?id=${item.id}">View</a></td>
 `;
 
 table.appendChild(row);

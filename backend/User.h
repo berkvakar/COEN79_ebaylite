@@ -22,11 +22,10 @@ private:
 public:
     User() = default;
 
-    User(std::string username, std::string password, std::string email)
-        : username(username), password(password), email(email) {}
+    User(std::string username, std::string password)
+        : username(username), password(password) {}
 
-    ~User();
-
+    
     std::string getUsername() const;
     void setUsername(const std::string& username);
 

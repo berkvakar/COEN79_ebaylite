@@ -7,12 +7,13 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <cstdlib>
 
 int main() {
 
     crow::App<crow::CORSHandler> app;
     auto& cors = app.get_middleware<crow::CORSHandler>();
-    cors.global().origin("*").methods("GET"_method).headers("Content-Type");
+    cors.global().origin("*").methods("GET"_method, "POST"_method, "OPTIONS"_method).headers("Content-Type");
     
     Marketplace market;
     Userbase userbase;
@@ -22,11 +23,45 @@ int main() {
 
         std::string username = "user" + std::to_string(i);
         std::string password = "password" + std::to_string(i);
-        std::string email = username + "@example.com";
 
-        User user(username, password, email);
+        User user(username, password);
         userbase.addUser(user);
     }
+
+	//AUTH API ENDPOINTS
+	
+	//LOGIN API ENDPOINT, takes username and password, returns 200 if successful, 401 if failed
+	CROW_ROUTE(app, "/login").methods("POST"_method)
+	([&userbase](const crow::request& req) {
+		auto body = crow::json::load(req.body);
+		std::string username = body["username"].s();
+		std::string password = body["password"].s();
+		//check if user exists
+		if(!userbase.userExists(username)) {
+			return crow::response(401, "Username is wrong");
+		}
+		//check if password is correct
+		User* user = userbase.getUser(username);
+		if(user->getPassword() == password) {
+			return crow::response(200, "Login successful");
+		}
+		return crow::response(401, "Password is wrong");
+	});
+
+	CROW_ROUTE(app, "/signup").methods("POST"_method)
+	([&userbase](const crow::request& req) {
+		auto body = crow::json::load(req.body);
+		std::string username = body["username"].s();
+		std::string password = body["password"].s();
+		//check if user already exists
+		if(userbase.userExists(username)) {
+			return crow::response(400, "User already exists");
+		}
+		//create new user
+		User newUser(username, password);
+		userbase.addUser(newUser);
+		return crow::response(200, "User created successfully");
+	});
 
     // create some dummy items
     for(int i = 0; i < 10; i++) {
@@ -37,8 +72,7 @@ int main() {
 
         User dummyuser(
             "seller" + std::to_string(i),
-            "password",
-            "seller@example.com"
+            "password"
         );
 
         Item item(name, description, price, dummyuser, std::time(nullptr));
@@ -74,7 +108,7 @@ int main() {
         std::string description = body["description"].s();
         double price = body["price"].d();
 
-        User seller("seller", "password", "seller@example.com");
+        User seller("seller", "password");
 
         Item newItem(name, description, price, seller, std::time(nullptr));
 

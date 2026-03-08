@@ -1,7 +1,6 @@
 #include "User.h"
 #include "Item.h"
 
-User::~User() {}
 
 std::string User::getUsername() const {
     return username;

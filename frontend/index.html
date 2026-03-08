@@ -1,45 +1,49 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>eBay Lite Marketplace</title>
-<link rel="stylesheet" href="style.css">
+    <title>eBay Lite</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
-<h1>eBay Lite Marketplace</h1>
+    <header>
+        <h1>eBay Lite</h1>
+    </header>
 
-<nav>
-<a href="index.html">Listings</a>
-<a href="profile.html">Profile</a>
-</nav>
-</header>
+    <div class="container">
+        <h2 class="page-title">Welcome to eBay Lite</h2>
+        <p class="page-subtitle">Login or create an account to continue.</p>
 
-<div class="container">
+        <div class="auth-actions">
+            <button id="showLoginBtn" type="button">Login</button>
+            <button id="showCreateBtn" type="button">Create Account</button>
+        </div>
 
-<h2>Active Listings</h2>
+        <div id="loginBlock" class="auth-block hidden">
+            <h3>Login</h3>
+            <form id="loginForm">
+                <input id="loginUsername" type="text" name="loginUsername" placeholder="Username" required>
+                <input id="loginPassword" type="password" name="loginPassword" placeholder="Password" required>
+                <button type="submit">Continue</button>
+            </form>
+        </div>
 
-<table id="itemsTable">
+        <div id="createBlock" class="auth-block hidden">
+            <h3>Create Account</h3>
+            <form id="signupForm">
+                <input id="createUsername" type="text" name="createUsername" placeholder="Username" required>
+                <input id="createPassword" type="password" name="createPassword" placeholder="Password" required>
+                <button type="submit">Continue</button>
+            </form>
+        </div>
 
-<thead>
-<tr>
-<th>ID</th>
-<th>Item</th>
-<th>Current Bid</th>
-<th>Buy Now</th>
-<th>Expires</th>
-<th>Details</th>
-</tr>
-</thead>
+        <p id="authMessage"></p>
+    </div>
 
-<tbody></tbody>
-
-</table>
-
-</div>
-
-<script src="listingsApi.js"></script>
+    <script src="auth.js"></script>
 
 </body>
+
 </html>
