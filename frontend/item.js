@@ -4,42 +4,45 @@ const items = [
 { id:3, name:"Electric Guitar", bid:200, buyNow:350, expires:"45m" }
 ];
 
+function loadItem(){
+
 const params = new URLSearchParams(window.location.search);
 const itemId = params.get("id");
 
 const item = items.find(i => i.id == itemId);
 
-if(item){
+if(!item){
+console.log("No item selected");
+return;
+}
 
 document.getElementById("itemName").innerText = item.name;
 document.getElementById("currentBid").innerText = item.bid;
 document.getElementById("buyNow").innerText = item.buyNow;
 document.getElementById("expires").innerText = item.expires;
 
+window.currentItem = item;
+
 }
 
 function placeBid(){
 
-const bidInput = document.getElementById("bidAmount");
-const amount = Number(bidInput.value);
+const amount = Number(document.getElementById("bidAmount").value);
 
-if(!item){
-alert("Item not found");
-return;
-}
+if(amount > window.currentItem.bid){
 
-if(amount > item.bid){
+window.currentItem.bid = amount;
 
-item.bid = amount;
-
-document.getElementById("currentBid").innerText = item.bid;
+document.getElementById("currentBid").innerText = amount;
 
 alert("Bid accepted!");
 
 }else{
 
-alert("Bid must be higher than current bid!");
+alert("Bid must be higher than current bid");
 
 }
 
 }
+
+window.onload = loadItem;
