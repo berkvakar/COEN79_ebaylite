@@ -14,9 +14,10 @@ const list = document.getElementById("watchlist");
 
 watchlist.forEach(item => {
 
-const row = `<li>${item}</li>`;
+const row = document.createElement("li");
+row.textContent = item;
 
-list.innerHTML += row;
+list.appendChild(row);
 
 });
 
@@ -28,9 +29,10 @@ const list = document.getElementById("history");
 
 history.forEach(entry => {
 
-const row = `<li>${entry}</li>`;
+const row = document.createElement("li");
+row.textContent = entry;
 
-list.innerHTML += row;
+list.appendChild(row);
 
 });
 
