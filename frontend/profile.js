@@ -8,35 +8,27 @@ const history = [
 "Lost MacBook Pro - $920"
 ];
 
-function loadWatchlist(){
+function loadProfile(){
 
-const list = document.getElementById("watchlist");
+const watch = document.getElementById("watchlist");
+const hist = document.getElementById("history");
 
 watchlist.forEach(item => {
 
-const row = document.createElement("li");
-row.textContent = item;
-
-list.appendChild(row);
+const li = document.createElement("li");
+li.textContent = item;
+watch.appendChild(li);
 
 });
-
-}
-
-function loadHistory(){
-
-const list = document.getElementById("history");
 
 history.forEach(entry => {
 
-const row = document.createElement("li");
-row.textContent = entry;
-
-list.appendChild(row);
+const li = document.createElement("li");
+li.textContent = entry;
+hist.appendChild(li);
 
 });
 
 }
 
-loadWatchlist();
-loadHistory();
+window.onload = loadProfile;
