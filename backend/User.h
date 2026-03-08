@@ -19,6 +19,7 @@ private:
     // User attributes
     std::string username;
     std::string password;
+    std::string email;
 
     // User's history and watchlist
     std::vector<Item> history; 
@@ -39,6 +40,9 @@ public:
     std::string getPassword() const;
     void setPassword(const std::string& password);
 
+    std::string getEmail() const;
+    void setEmail(const std::string& email);
+ok
     // History and Watchlist management
     void addToHistory(const Item& entry);
     void addToWatchlist(const Item& entry);
