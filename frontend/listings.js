@@ -8,27 +8,28 @@ function renderListings(){
 
 const table = document.querySelector("#itemsTable tbody");
 
-table.innerHTML = "";
+if(!table){
+console.error("Table not found");
+return;
+}
 
 items.forEach(item => {
 
-const row = `
-<tr>
+const row = document.createElement("tr");
+
+row.innerHTML = `
 <td>${item.id}</td>
 <td>${item.name}</td>
 <td>$${item.bid}</td>
 <td>$${item.buyNow}</td>
 <td>${item.expires}</td>
-<td>
-<a href="item.html?id=${item.id}">View</a>
-</td>
-</tr>
+<td><a href="item.html?id=${item.id}">View</a></td>
 `;
 
-table.innerHTML += row;
+table.appendChild(row);
 
 });
 
 }
 
-renderListings();
+window.onload = renderListings;
