@@ -153,6 +153,8 @@ int main() {
             results[i]["name"] = item.getName();
             results[i]["description"] = item.getDescription();
             results[i]["price"] = item.getBuynowPrice();
+            results[i]["highestBid"] = item.getHighestBid().first;
+            results[i]["bidder"] = item.getHighestBid().second;
             results[i]["timeLeftSeconds"] = item.getTimeLeftSeconds();
             ++i;
         }
@@ -170,9 +172,19 @@ int main() {
         std::string description = body["description"].s();
         double price = body["price"].d();
 
+        //if endTimeInSeconds is provided, use it, otherwise use 2 hours from now
+        std::time_t now = std::time(nullptr);
+        std::time_t endTime = now + 2 * 60 * 60;
+        if (body.has("endTimeInSeconds")) {
+            std::time_t requestedEndTime = static_cast<std::time_t>(body["endTimeInSeconds"].i());
+            if (requestedEndTime > now) {
+                endTime = requestedEndTime;
+            }
+        }
+
         User seller("seller", "password");
 
-        Item newItem(name, description, price, seller, std::time(nullptr) + 2 * 60 * 60);
+        Item newItem(name, description, price, seller, endTime);
 
         market.addItem(newItem);
 

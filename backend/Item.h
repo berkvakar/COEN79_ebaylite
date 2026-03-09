@@ -3,6 +3,7 @@
 
 #include <string>
 #include <ctime>
+#include <utility>
 #include "Bids.h"
 #include "User.h"
 
@@ -38,6 +39,7 @@ public:
     void setBuynowPrice(double price);
 
     Bids getBidsList() const;
+    std::pair<double, std::string> getHighestBid() const;
     void addBid(double bid, const std::string& bidderUsername);
 
     bool isSold() const;

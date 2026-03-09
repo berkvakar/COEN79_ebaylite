@@ -19,19 +19,28 @@ function startCountdown(cell, secondsLeft) {
     tick();
 }
 
+function formatMoney(amount) {
+    const num = Number(amount) || 0;
+    return `$${num.toFixed(2)}`;
+}
+
 window.onload = function () {
     fetch("http://localhost:18080/listingsAPI")
         .then((response) => response.json())
-        .then((items) => {
+        .then((data) => {
+            const items = Array.isArray(data) ? data : Object.values(data);
             const table = document.querySelector("#itemsTable tbody");
             table.innerHTML = "";
 
             items.forEach((item, i) => {
+                const currentBid = Number(item.highestBid) > 0 ? formatMoney(item.highestBid) : "$0.00";
+                const bidder = item.bidder && String(item.bidder).trim() ? item.bidder : "-";
                 const row = document.createElement("tr");
                 row.innerHTML = `
 <td>${item.name}</td>
-<td>$${item.price}</td>
-<td>$${item.price}</td>
+<td>${currentBid}</td>
+<td>${bidder}</td>
+<td>${formatMoney(item.price)}</td>
 <td class="expires">--:--:--</td>
 <td><a href="/item.html?id=${i}">View</a></td>
 `;

@@ -44,6 +44,14 @@ Bids Item::getBidsList() const {
     return bidsList;
 }
 
+std::pair<double, std::string> Item::getHighestBid() const {
+    std::vector<std::pair<double, std::string>> allBids = bidsList.getAllBids();
+    if (allBids.empty()) {
+        return {0.0, ""};
+    }
+    return allBids.front();
+}
+
 void Item::addBid(double bid, const std::string& bidderUsername) {
     bidsList.addBid(bid, bidderUsername);
 }
@@ -73,17 +81,19 @@ bool Item::isExpired() const {
 }
 
 void Item::closeAuction() {
-   if(sold) {
-           return;
-   }
+    if(sold) {
+            return;
+    }
            
-double highestBid = bidsList.getHighestBid();
-if(highestBid >= buynow_price) {
-sold = true;
-return;
-}
-if(!bidsList.isEmpty()) {
-sold = true;
-}
+    double highestBid = bidsList.getHighestBid();
+    if(highestBid >= buynow_price) {
+        sold = true;
+        return;
+    }
+    if(!bidsList.isEmpty()) {
+        sold = true;
+        return;
+    }
     
+    sold = true;
 }

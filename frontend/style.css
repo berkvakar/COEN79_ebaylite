@@ -144,6 +144,40 @@ gap:10px;
 margin-top:14px;
 }
 
+#createListingBtn{
+margin-bottom:12px;
+}
+
+.listing-form{
+display:flex;
+flex-direction:column;
+gap:8px;
+max-width:380px;
+margin-bottom:16px;
+}
+
+.listing-form input{
+padding:8px;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+.listing-form select{
+padding:8px;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+.listing-form label{
+font-size:14px;
+font-weight:bold;
+}
+
+.listing-form-actions{
+display:flex;
+gap:8px;
+}
+
 .danger-btn{
 background:#c62828;
 }
