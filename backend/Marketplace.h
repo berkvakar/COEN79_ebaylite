@@ -25,5 +25,5 @@ class Marketplace{
         std::list<Item> getListings(int sortOption = 0) const; // Method to retrieve all listings in the marketplace
         void refresh();
 };
-
+void closeAuction ();
 #endif // MARKETPLACE_H
