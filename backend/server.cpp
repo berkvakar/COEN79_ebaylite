@@ -143,8 +143,8 @@ int main() {
 
     // API: return all listings
     CROW_ROUTE(app, "/listingsAPI")
-    ([&market]() {
-        market.refresh();
+    ([&market, &userbase]() {
+        market.refresh(userbase);
         crow::json::wvalue results;
 
         std::list<Item> items = market.getListings();
