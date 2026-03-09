@@ -119,6 +119,6 @@ void Item::closeAuction(Userbase& userbase)
 
     if (buyer != nullptr)
     {
-        buyer->addToHistory(this);
+        buyer->addToHistory(*this);
     }
 }

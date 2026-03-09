@@ -1,6 +1,13 @@
 #include "User.h"
 #include "Item.h"
+#include <algorithm>
 
+User::User() = default;
+
+User::User(std::string username, std::string password)
+    : username(username), password(password) {}
+
+User::~User() = default;
 
 std::string User::getUsername() const {
     return username;
@@ -18,8 +25,8 @@ void User::setPassword(const std::string& password) {
     this->password = password;
 }
 
-void User::addToHistory(Item* entry) {
-    history.push_back(entry);
+void User::addToHistory(const Item& entry) {
+    history.push_back({entry.getName(), entry.getBuynowPrice()});
 }
 
 void User::addToWatchlist(Item* entry) {
@@ -34,7 +41,11 @@ void User::addBidItem(Item* item) {
     bids.push_back(item);
 }
 
-const std::vector<Item*>& User::getHistory() const {
+void User::removeBidItem(Item* item) {
+    bids.erase(std::remove(bids.begin(), bids.end(), item), bids.end());
+}
+
+const std::vector<std::pair<std::string, double>>& User::getHistory() const {
     //bid amount, Item name, did you buy it
     //vector<arr[3]>?
     return history;

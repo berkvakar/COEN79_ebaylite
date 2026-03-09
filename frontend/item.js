@@ -41,9 +41,11 @@ function startCountdown(element, secondsLeft)
 // Load item information from the backend
 function loadItem()
 {
+    const normalizeName = (value) => String(value || "").trim().toLowerCase();
     // get item id from the URL
     const params = new URLSearchParams(window.location.search);
     const itemId = params.get("id");
+    const itemName = params.get("name");
 
     // fetch item list from server
     fetch("http://localhost:18080/listingsAPI")
@@ -51,7 +53,18 @@ function loadItem()
     .then(data => {
 
         const items = Array.isArray(data) ? data : Object.values(data);
-        const item = items[itemId];
+        let item = null;
+        let resolvedItemId = null;
+        if (itemId !== null) {
+            item = items[itemId];
+            resolvedItemId = Number(itemId);
+        } else if (itemName) {
+            const targetName = normalizeName(itemName);
+            resolvedItemId = items.findIndex((entry) => normalizeName(entry && entry.name) === targetName);
+            if (resolvedItemId >= 0) {
+                item = items[resolvedItemId];
+            }
+        }
 
         if(!item)
         {
@@ -74,15 +87,116 @@ function loadItem()
 
         // save item for bidding
         window.currentItem = item;
+        window.currentItemId = resolvedItemId;
+
+        // add Buy Now button if not already present
+        if (!document.getElementById("buyNowBtn")) {
+            const buyNowBtn = document.createElement("button");
+            buyNowBtn.id = "buyNowBtn";
+            buyNowBtn.textContent = "Buy Now";
+            buyNowBtn.onclick = buyNow;
+            document.querySelector(".container").appendChild(buyNowBtn);
+        }
     });
 }
 
-// Handle placing a bid
-function placeBid()
+async function refreshCurrentItemFromBackend()
 {
-	const params = new URLSearchParams(window.location.search);
-	const itemId = params.get("id");
+    const id = Number(window.currentItemId);
+    if(!Number.isInteger(id) || id < 0)
+    {
+        return false;
+    }
+
+    const response = await fetch("http://localhost:18080/listingsAPI");
+    if(!response.ok)
+    {
+        return false;
+    }
+
+    const data = await response.json();
+    const items = Array.isArray(data) ? data : Object.values(data);
+    const updatedItem = items[id];
+    if(!updatedItem)
+    {
+        return false;
+    }
+
+    window.currentItem = updatedItem;
+    document.getElementById("itemName").innerText = updatedItem.name;
+    document.getElementById("currentBid").innerText = updatedItem.highestBid;
+    document.getElementById("buyNow").innerText = updatedItem.price;
+    if(updatedItem.description){
+        document.getElementById("description").innerText = updatedItem.description;
+    }
+    return true;
+}
+
+async function markCurrentItemAsSold()
+{
+    const id = Number(window.currentItemId);
+    const username = localStorage.getItem("currentUser");
+
+    if(!Number.isInteger(id) || id < 0)
+    {
+        alert("Unable to determine item id.");
+        return false;
+    }
+    if(!username)
+    {
+        alert("Please sign in first.");
+        return false;
+    }
+
+    const response = await fetch("http://localhost:18080/markAsSold", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            id: id,
+            username: username
+        })
+    });
+
+    if(!response.ok)
+    {
+        alert("Could not complete purchase right now.");
+        return false;
+    }
+
+    return true;
+}
+
+async function buyNow()
+{
+    const ok = await markCurrentItemAsSold();
+    if(ok)
+    {
+        alert("Item purchased.");
+    }
+}
+
+// Handle placing a bid
+async function placeBid()
+{
+	const itemId = Number(window.currentItemId);
+	const bidder = localStorage.getItem("currentUser");
 	const amount = Number(document.getElementById("bidAmount").value);
+
+	if(!Number.isInteger(itemId) || itemId < 0)
+	{
+		alert("Unable to determine item id.");
+		return;
+	}
+	if(!bidder)
+	{
+		alert("Please sign in first.");
+		return;
+	}
+	if(!Number.isFinite(amount) || amount <= 0)
+	{
+		alert("Please enter a valid bid.");
+		return;
+	}
 
 	if(amount <= window.currentItem.highestBid)
 	{
@@ -91,26 +205,44 @@ function placeBid()
 	}
 
 	// send bid to backen
-	fetch("http://localhost:18080/bid", {
+	const bidResponse = await fetch("http://localhost:18080/bid", {
 		method: "POST",
 		headers: {"Content-Type":"application/json"},
 		body: JSON.stringify({
 			id: itemId,
 			bid: amount,
-			bidder: localStorage.getItem("currentUser")
+			bidder: bidder
 		})
 	});
+	if(!bidResponse.ok)
+	{
+		alert("Bid failed.");
+		return;
+	}
 
-	// update UI
-	window.currentItem.highestBid = amount;
-	document.getElementById("currentBid").innerText = amount;
+	// refresh from backend so item bid state stays authoritative
+	await refreshCurrentItemFromBackend();
+
+	if(amount >= Number(window.currentItem.price))
+	{
+		const sold = await markCurrentItemAsSold();
+		if(sold)
+		{
+			alert("Bid accepted and item purchased.");
+			return;
+		}
+	}
 
 	alert("Bid accepted!");
 }
 function addToWatchlist()
 {
-	const params = new URLSearchParams(window.location.search);
-	const itemId = params.get("id");
+	const itemId = Number(window.currentItemId);
+	if(!Number.isInteger(itemId) || itemId < 0)
+	{
+		alert("Unable to determine item id.");
+		return;
+	}
 
 	fetch("http://localhost:18080/watch", {
 		method: "POST",

@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <thread>
 #include <chrono>
+#include <unordered_map>
 
 void simulateBids(Marketplace& marketplace)
 {
@@ -117,27 +118,54 @@ int main() {
             return crow::response(404, "User does not exist");
         }
 
-	auto toJsonList = [](const std::vector<Item*>& items) 
+        std::unordered_map<const Item*, int> listingIndexByPtr;
+        int listingIndex = 0;
+        for (const auto& listing : market.getListingsRef()) {
+            listingIndexByPtr[&listing] = listingIndex++;
+        }
+
+	auto toJsonList = [&listingIndexByPtr](const std::vector<Item*>& items) 
 	{
  	   	crow::json::wvalue::list out;
    		for (const auto* item : items)
     		{
        			crow::json::wvalue entry;
-			if(item != nullptr)
-        		{
-            			entry["name"] = item->getName();
-            			entry["description"] = item->getDescription();
-           	 		entry["price"] = item->getBuynowPrice();
-
-           			 // include the highest bid amount
-         			   entry["amount"] = item->getHighestBid().first;
-        		}
+                        entry["id"] = -1;
+			if (item != nullptr) {
+                            auto idx = listingIndexByPtr.find(item);
+                            if (idx != listingIndexByPtr.end()) {
+                                entry["id"] = idx->second;
+                                entry["name"] = item->getName();
+                                entry["description"] = item->getDescription();
+                                entry["price"] = item->getBuynowPrice();
+                                entry["amount"] = item->getHighestBid().first;
+                            } else {
+                                // Pointer is stale (item removed); avoid dereferencing it.
+                                entry["name"] = "Unavailable item";
+                                entry["description"] = "Item no longer active";
+                                entry["price"] = 0;
+                                entry["amount"] = 0;
+                            }
+                        }
 			out.push_back(entry);
    	 	}	
 	    return out;
 	};
 
-        profile["history"] = toJsonList(user->getHistory());
+        auto toJsonHistoryList = [](const std::vector<std::pair<std::string, double>>& items)
+        {
+            crow::json::wvalue::list out;
+            for (const auto& item : items)
+            {
+                crow::json::wvalue entry;
+                entry["name"] = item.first;
+                entry["price"] = item.second;
+                out.push_back(entry);
+            }
+            return out;
+        };
+
+        profile["history"] = toJsonHistoryList(user->getHistory());
         profile["watchlist"] = toJsonList(user->getWatchlist());
         profile["sold"] = toJsonList(user->getSold());
         profile["bids"] = toJsonList(user->getBids());
@@ -314,6 +342,37 @@ int main() {
         return crow::response(404, "Item not found");
     });
 
+
+    //mark item as sold
+    CROW_ROUTE(app, "/markAsSold").methods("POST"_method)
+    ([&market, &userbase, &logs](const crow::request& req) {
+        auto body = crow::json::load(req.body);
+        if (!body) {
+            return crow::response(400, "Invalid JSON");
+        }
+        int id = body["id"].i();
+        std::string username = body["username"].s();
+        User* user = userbase.getUser(username);
+        if (user == nullptr) {
+            return crow::response(404, "User not found");
+        }
+        std::list<Item>& items = market.getListingsRef();
+        int i = 0;
+        for (auto& item : items) {
+            if (i == id) {
+                item.markAsSold();
+                user->addToHistory(item);
+                user->removeBidItem(&item);
+                logs.addLog("Item marked as sold: " + item.getName());
+                market.refresh(userbase, logs);
+                return crow::response(200, "Item marked as sold");
+            }
+            i++;
+        }
+        return crow::response(404, "Item not found");
+    });
+
+//--------------------------------LOGS API ENDPOINTS--------------------------------
     CROW_ROUTE(app, "/logs").methods("GET"_method)
     ([&logs]() {
         logs.printLogs();

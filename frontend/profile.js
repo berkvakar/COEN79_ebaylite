@@ -1,4 +1,8 @@
-function renderItems(listElement, items, isBidsSection) {
+function normalizeName(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function renderItems(listElement, items, isBidsSection, getViewHref) {
   listElement.innerHTML = "";
 
   if (!items || items.length === 0) {
@@ -10,11 +14,13 @@ function renderItems(listElement, items, isBidsSection) {
 
   items.forEach(function (item) {
     const li = document.createElement("li");
-    const viewLink = `<a href="/marketplace.html?id=${item.id}">View</a>`;
+    const itemName = item && item.name ? item.name : "Unknown item";
+    const hasPrice = item && item.price !== undefined;
+    const pricePart = hasPrice ? ` - $${item.price}` : "";
     if (isBidsSection && item.amount !== undefined) {
-      li.innerHTML = `${item.name} - $${item.amount} (${viewLink})`;
+      li.innerHTML = `${itemName}${pricePart} - Bid: $${item.amount}`;
     } else {
-      li.innerHTML = `${item.name} (${viewLink})`;
+      li.innerHTML = `${itemName}${pricePart}`;
     }
     listElement.appendChild(li);
   });
@@ -125,7 +131,49 @@ async function loadProfile() {
     }
 
     const profile = await response.json();
-    renderItems(watch, profile.watchlist || [], false);
+    const watchItems = profile.watchlist || [];
+
+    try {
+      const listingsResponse = await fetch("http://localhost:18080/listingsAPI");
+      if (listingsResponse.ok) {
+        const listingsPayload = await listingsResponse.json();
+        const listings = Array.isArray(listingsPayload) ? listingsPayload : Object.values(listingsPayload);
+        const nameToIndices = new Map();
+
+        listings.forEach(function (listing, index) {
+          const key = normalizeName(listing && listing.name);
+          if (!key) {
+            return;
+          }
+          if (!nameToIndices.has(key)) {
+            nameToIndices.set(key, []);
+          }
+          nameToIndices.get(key).push(index);
+        });
+
+        watchItems.forEach(function (item) {
+          const existingId = Number(item && item.id);
+          if (Number.isInteger(existingId) && existingId >= 0) {
+            return;
+          }
+          const key = normalizeName(item && item.name);
+          const available = nameToIndices.get(key);
+          if (available && available.length > 0) {
+            item.id = available.shift();
+          }
+        });
+      }
+    } catch (error) {
+      // Keep profile page usable if listings request fails.
+    }
+
+    renderItems(watch, watchItems, false, function (item) {
+      const itemId = Number(item && item.id);
+      if (Number.isInteger(itemId) && itemId >= 0) {
+        return `/item.html?id=${itemId}`;
+      }
+      return null;
+    });
     renderItems(hist, profile.history || [], false);
     renderItems(sold, profile.sold || [], false);
     renderItems(bids, profile.bids || [], true);
