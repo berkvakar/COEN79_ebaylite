@@ -8,11 +8,11 @@
 
 #ifndef MARKETPLACE_H
 #define MARKETPLACE_H
-#include <vector>
+#include <list>
 #include "Item.h"
 class Marketplace{
     private:
-        std::vector<Item> listings; // Vector to store all the items listed in the marketplace
+        std::list<Item> listings; // Vector to store all the items listed in the marketplace
     public:
         enum sortOptions {
             NEWEST_FIRST = 0,
@@ -22,7 +22,7 @@ class Marketplace{
         };
         Marketplace();
         void addItem(const Item& item); // Method to add an item to the marketplace
-        std::vector<Item> getListings(int sortOption = 0) const; // Method to retrieve all listings in the marketplace
+        std::list<Item> getListings(int sortOption = 0) const; // Method to retrieve all listings in the marketplace
         void refresh();
 };
 
