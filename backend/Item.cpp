@@ -60,6 +60,14 @@ User Item::getSeller() const {
     return seller;
 }
 
+int Item::getTimeLeftSeconds() const {
+    const std::time_t now = std::time(nullptr);
+    if (endTime <= now) {
+        return 0;
+    }
+    return static_cast<int>(endTime - now);
+}
+
 bool Item::isExpired() const {
     return std::time(nullptr) > endTime;
 }

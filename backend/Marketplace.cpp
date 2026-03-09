@@ -19,18 +19,21 @@ std::list<Item> Marketplace::getListings(int sortOption) const
 	return listings;				//return no sort
 }
 
-Marketplace::refresh(){
-	//check if any items are expired
-	for(int i = 0; i < listings.size(); i++) {
-		if(listings[i].isExpired()) {
-			listings[i].closeAuction();
+void Marketplace::refresh() {
+	//check if any items are expired or sold to remove them from marketplace close auction should handle all of the user logic
+	for (auto it = listings.begin(); it != listings.end(); ) {
+		if (it->isExpired()) {
+			// it->closeAuction();
+			it = listings.erase(it);
+			continue;
 		}
-		//if item is sold, remove it from listings
-		if(listings[i].isSold()) {
-			listings.erase(listings.begin() + i);
-			i--;
+		if (it->isSold()) {
+			it = listings.erase(it);
+			continue;
 		}
+		++it;
 	}
+
 }
 
 

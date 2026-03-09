@@ -6,6 +6,7 @@
 #include "Item.h"
 #include <string>
 #include <vector>
+#include <list>
 #include <ctime>
 #include <cstdlib>
 
@@ -135,7 +136,7 @@ int main() {
             "password"
         );
 
-        Item item(name, description, price, dummyuser, std::time(nullptr));
+        Item item(name, description, price, dummyuser, std::time(nullptr) + 2 * 60 * 60);
 
         market.addItem(item);
     }
@@ -143,16 +144,17 @@ int main() {
     // API: return all listings
     CROW_ROUTE(app, "/listingsAPI")
     ([&market]() {
-
+        market.refresh();
         crow::json::wvalue results;
 
-        std::vector<Item> items = market.getListings();
-
-        for(int i = 0; i < items.size(); i++) {
-
-            results[i]["name"] = items[i].getName();
-            results[i]["description"] = items[i].getDescription();
-            results[i]["price"] = items[i].getBuynowPrice();
+        std::list<Item> items = market.getListings();
+        int i = 0;
+        for (const auto& item : items) {
+            results[i]["name"] = item.getName();
+            results[i]["description"] = item.getDescription();
+            results[i]["price"] = item.getBuynowPrice();
+            results[i]["timeLeftSeconds"] = item.getTimeLeftSeconds();
+            ++i;
         }
 
         return results;
@@ -170,7 +172,7 @@ int main() {
 
         User seller("seller", "password");
 
-        Item newItem(name, description, price, seller, std::time(nullptr));
+        Item newItem(name, description, price, seller, std::time(nullptr) + 2 * 60 * 60);
 
         market.addItem(newItem);
 

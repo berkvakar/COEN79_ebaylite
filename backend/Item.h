@@ -45,6 +45,7 @@ public:
 
     User getSeller() const;
 
+    int getTimeLeftSeconds() const;
     bool isExpired() const;
     void closeAuction();
 };
