@@ -24,6 +24,7 @@ class Marketplace{
         Marketplace();
         void addItem(const Item& item); // Method to add an item to the marketplace
         std::list<Item> getListings(int sortOption = 0) const; // Method to retrieve all listings in the marketplace
+        std::list<Item>& getListingsRef(); //this returns listings not a copy
         void refresh(Userbase& userbase, Logs& logs);
 };
 

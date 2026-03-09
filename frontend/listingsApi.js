@@ -42,7 +42,7 @@ window.onload = function () {
 <td>${bidder}</td>
 <td>${formatMoney(item.price)}</td>
 <td class="expires">--:--:--</td>
-<td><a href="/item.html?id=${i}">View</a></td>
+<td><a href="./item.html?id=${i}">View</a></td>
 `;
                 table.appendChild(row);
                 startCountdown(row.querySelector(".expires"), item.timeLeftSeconds);

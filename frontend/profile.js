@@ -10,7 +10,7 @@ function renderItems(listElement, items, isBidsSection) {
 
   items.forEach(function (item) {
     const li = document.createElement("li");
-    const viewLink = `<a href="/item.html?id=${item.id}">View</a>`;
+    const viewLink = `<a href="/marketplace.html?id=${item.id}">View</a>`;
     if (isBidsSection && item.amount !== undefined) {
       li.innerHTML = `${item.name} - $${item.amount} (${viewLink})`;
     } else {
@@ -100,6 +100,7 @@ async function loadProfile() {
             name: name,
             description: description,
             price: price,
+	    seller: localStorage.getItem("currentUser"),
             endTimeInSeconds: Math.floor(expiresAtMs / 1000)
           })
         });

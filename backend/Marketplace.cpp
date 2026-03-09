@@ -14,12 +14,16 @@ void Marketplace::addItem(const Item& item)		//adds new item listing to marketpl
 	listings.push_back(item);			
 }
 
-//return list of items in market
+//return copy list of items in market
 std::list<Item> Marketplace::getListings(int sortOption) const
 {	
 	return listings;				//return no sort
 }
-
+//return reference to the actual listings list
+std::list<Item>& Marketplace::getListingsRef()
+{
+    return listings;
+}
 void Marketplace::refresh(Userbase& userbase, Logs& logs) {
 	//check if any items are expired or sold to remove them from marketplace close auction should handle all of the user logic
 	for (auto it = listings.begin(); it != listings.end(); ) {

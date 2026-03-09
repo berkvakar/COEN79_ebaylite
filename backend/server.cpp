@@ -10,7 +10,19 @@
 #include <list>
 #include <ctime>
 #include <cstdlib>
+#include <thread>
+#include <chrono>
 
+void simulateBids(Marketplace& marketplace)
+{
+	for (auto& item : marketplace.getListingsRef()){
+        	if (rand() % 4 == 0)  // 25% chance
+        	{
+           		double newBid = item.getHighestBid().first + (rand() % 20 + 1);
+            		item.addBid(newBid, "botUser");
+        	}
+    	}
+}
 int main() {
 
     crow::App<crow::CORSHandler> app;
@@ -105,19 +117,25 @@ int main() {
             return crow::response(404, "User does not exist");
         }
 
-        auto toJsonList = [](const std::vector<Item*>& items) {
-            crow::json::wvalue::list out;
-            for (const auto* item : items) {
-                crow::json::wvalue entry;
-                if (item != nullptr) {
-                    entry["name"] = item->getName();
-                    entry["description"] = item->getDescription();
-                    entry["price"] = item->getBuynowPrice();
-                }
-                out.push_back(std::move(entry));
-            }
-            return out;
-        };
+	auto toJsonList = [](const std::vector<Item*>& items) 
+	{
+ 	   	crow::json::wvalue::list out;
+   		for (const auto* item : items)
+    		{
+       			crow::json::wvalue entry;
+			if(item != nullptr)
+        		{
+            			entry["name"] = item->getName();
+            			entry["description"] = item->getDescription();
+           	 		entry["price"] = item->getBuynowPrice();
+
+           			 // include the highest bid amount
+         			   entry["amount"] = item->getHighestBid().first;
+        		}
+			out.push_back(entry);
+   	 	}	
+	    return out;
+	};
 
         profile["history"] = toJsonList(user->getHistory());
         profile["watchlist"] = toJsonList(user->getWatchlist());
@@ -174,33 +192,126 @@ int main() {
 
     // API: add item
     CROW_ROUTE(app, "/addItem").methods("POST"_method)
-    ([&market, &logs](const crow::request& req) {
+    ([&market, &logs, &userbase](const crow::request& req) {
 
         auto body = crow::json::load(req.body);
 
         std::string name = body["name"].s();
         std::string description = body["description"].s();
         double price = body["price"].d();
+        std::string sellerName = body["seller"].s();
 
-        //if endTimeInSeconds is provided, use it, otherwise use 2 hours from now
-        std::time_t now = std::time(nullptr);
-        std::time_t endTime = now + 2 * 60 * 60;
-        if (body.has("endTimeInSeconds")) {
+       std::time_t now = std::time(nullptr);
+       std::time_t endTime = now + 2 * 60 * 60;
+
+       if (body.has("endTimeInSeconds")) {
             std::time_t requestedEndTime = static_cast<std::time_t>(body["endTimeInSeconds"].i());
             if (requestedEndTime > now) {
                 endTime = requestedEndTime;
             }
         }
 
-        User seller("seller", "password");
+        User* seller = userbase.getUser(sellerName);
 
-        Item newItem(name, description, price, seller, endTime);
+        if(seller == nullptr)
+        {
+            return crow::response(400, "Seller does not exist");
+        }
+
+        Item newItem(name, description, price, *seller, endTime);
 
         market.addItem(newItem);
+
+        // add to seller profile
+        std::list<Item>& items = market.getListingsRef();
+        seller->addSoldItem(&items.back());
+
         logs.addLog("Item created: " + name);
-        
 
         return crow::response(200, "Item added");
+    });
+    // API: place bid
+
+    CROW_ROUTE(app, "/bid").methods("POST"_method)
+    ([&market, &logs, &userbase](const crow::request& req)
+    {
+        auto body = crow::json::load(req.body);
+
+        if(!body)
+        {
+            return crow::response(400, "Invalid JSON");
+        }
+
+        int id = body["id"].i();
+        double bid = body["bid"].d();
+        std::string bidder = body["bidder"].s();
+	std::cout << "Bidder received: " << bidder << std::endl;
+
+        std::list<Item>& items = market.getListingsRef();
+
+        int i = 0;
+        for(auto& item : items)
+        {
+            if(i == id)
+            {
+                if(bid <= item.getHighestBid().first)
+                {
+                    return crow::response(400, "Bid too low");
+                }
+                item.addBid(bid, bidder);
+                // add to user's bids list
+
+	User* user = userbase.getUser(bidder);
+		if(user != nullptr)
+		{
+			user->addBidItem(&item);
+			std::cout << "Added bid to user. Total bids now: "
+            	  	<< user->getBids().size() << std::endl;
+		}
+		else
+		{
+    			std::cout << "User not found for bidder: " << bidder << std::endl;
+		}
+
+                logs.addLog("Bid placed on " + item.getName());
+                return crow::response(200, "Bid accepted");
+            }
+
+            i++;
+        }
+        return crow::response(404, "Item not found");
+    });
+
+
+    CROW_ROUTE(app, "/watch").methods("POST"_method)
+    ([&userbase, &market](const crow::request& req)
+    {
+        auto body = crow::json::load(req.body);
+
+        if(!body)
+            return crow::response(400, "Invalid JSON");
+
+        int id = body["id"].i();
+        std::string username = body["username"].s();
+
+        User* user = userbase.getUser(username);
+        if(user == nullptr)
+           return crow::response(404, "User not found");
+
+        std::list<Item>& items = market.getListingsRef();
+
+        int i = 0;
+        for(auto& item : items)
+        {
+            if(i == id)
+            {
+                user->addToWatchlist(&item);
+                return crow::response(200, "Added to watchlist");
+            }
+            i++;
+        }
+
+        return crow::response(404, "Item not found");
     });
 
     CROW_ROUTE(app, "/logs").methods("GET"_method)
@@ -208,7 +319,14 @@ int main() {
         logs.printLogs();
         return crow::response(200, "Logs printed");
     });
-
+    // start background bot bidding
+    std::thread([&market]() {
+        while(true)
+        {
+            simulateBids(market);
+            std::this_thread::sleep_for(std::chrono::seconds(10)); // bot bids every 10s
+        }
+    }).detach();
     app.port(18080).multithreaded().run();
 
     return 0;
