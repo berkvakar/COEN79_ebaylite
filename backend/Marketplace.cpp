@@ -32,5 +32,14 @@ Marketplace::refresh(){
 		}
 	}
 }
-
+void Marketplace::closeAuction()
+{
+    for(auto &item : listings)
+    {
+        if(!item.isSold() && item.isExpired())
+        {
+            item.closeAuction();
+        }
+    }
+}
 
