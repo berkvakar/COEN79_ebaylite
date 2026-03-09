@@ -6,6 +6,7 @@
 #include <utility>
 #include "Bids.h"
 #include "User.h"
+#include "Userbase.h"
 
 class Item {
 
@@ -49,7 +50,7 @@ public:
 
     int getTimeLeftSeconds() const;
     bool isExpired() const;
-    void closeAuction();
+    void closeAuction(Userbase& userbase);
 };
 
 #endif
