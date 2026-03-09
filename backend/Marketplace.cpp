@@ -23,7 +23,7 @@ void Marketplace::refresh() {
 	//check if any items are expired or sold to remove them from marketplace close auction should handle all of the user logic
 	for (auto it = listings.begin(); it != listings.end(); ) {
 		if (it->isExpired()) {
-			// it->closeAuction();
+			it->closeAuction(userbase);
 			it = listings.erase(it);
 			continue;
 		}
