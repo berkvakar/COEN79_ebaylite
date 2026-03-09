@@ -81,19 +81,25 @@ bool Item::isExpired() const {
 }
 
 void Item::closeAuction() {
-    if(sold) {
-            return;
-    }
-           
-    double highestBid = bidsList.getHighestBid();
-    if(highestBid >= buynow_price) {
-        sold = true;
-        return;
-    }
-    if(!bidsList.isEmpty()) {
-        sold = true;
-        return;
-    }
-    
-    sold = true;
+if(sold) {
+ return;
+}
+
+auto bids = bidsList.getAllBids();
+
+if(bids.empty()) {
+sold = true;
+return;
+}
+
+double highestBid = bids[0].first;
+std::string winnerUsername = bids[0].second;
+
+sold = true;
+seller.addSoldItem(this);
+User* buyer = userbase.getUser(winnerUsername);
+
+if(buyer != nullptr) {
+ buyer->addToHistory(this);
+}
 }
