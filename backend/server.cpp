@@ -13,7 +13,7 @@ int main() {
 
     crow::App<crow::CORSHandler> app;
     auto& cors = app.get_middleware<crow::CORSHandler>();
-    cors.global().origin("*").methods("GET"_method, "POST"_method, "OPTIONS"_method).headers("Content-Type");
+    cors.global().origin("*").methods("GET"_method, "POST"_method, "DELETE"_method, "OPTIONS"_method).headers("Content-Type");
     
     Marketplace market;
     Userbase userbase;
@@ -28,7 +28,7 @@ int main() {
         userbase.addUser(user);
     }
 
-	//AUTH API ENDPOINTS
+	//--------------------------------AUTH API ENDPOINTS--------------------------------
 	
 	//LOGIN API ENDPOINT, takes username and password, returns 200 if successful, 401 if failed
 	CROW_ROUTE(app, "/login").methods("POST"_method)
@@ -48,6 +48,7 @@ int main() {
 		return crow::response(401, "Password is wrong");
 	});
 
+	//checks if user exists, creates new user if not, returns 200 if successful, 400 if user already exists
 	CROW_ROUTE(app, "/signup").methods("POST"_method)
 	([&userbase](const crow::request& req) {
 		auto body = crow::json::load(req.body);
@@ -62,6 +63,61 @@ int main() {
 		userbase.addUser(newUser);
 		return crow::response(200, "User created successfully");
 	});
+	
+	//deletes user, returns 200 if successful, 400 if user does not exist
+	CROW_ROUTE(app, "/deleteUser").methods("DELETE"_method)
+	([&userbase](const crow::request& req) {
+		auto body = crow::json::load(req.body);
+		std::string username = body["username"].s();
+        //check if user exists
+		if(!userbase.userExists(username)) {
+			return crow::response(400, "User does not exist");
+		}
+		userbase.removeUser(username);
+		return crow::response(200, "User deleted successfully");
+	});
+
+
+    // CROW_ROUTE(app, "/getUsers").methods("GET"_method)
+	// ([&userbase](const crow::request& req) {
+		
+        
+		
+	// 	return crow::response(200, "User deleted successfully");
+	// });
+    //--------------------------------USER PROFILE DATA-------------------------------------
+    CROW_ROUTE(app, "/profile/<string>").methods("GET"_method)
+    ([&userbase, &market](const std::string& username) {
+        if (!userbase.userExists(username)) {
+            return crow::response(404, "User does not exist");
+        }
+
+        auto listings = market.getListings();
+        crow::json::wvalue profile;
+        profile["username"] = username;
+
+        crow::json::wvalue::list history;
+        crow::json::wvalue::list watchlist;
+        crow::json::wvalue::list sold;
+        crow::json::wvalue::list bids;
+
+        User* user = userbase.getUser(username);
+        if(user == nullptr) {
+            return crow::response(404, "User does not exist");
+        }else{
+            history = user->getHistory();
+            watchlist = user->getWatchlist();
+            sold = user->getSold();
+            bids = user->getBids();
+        }
+        return crow::response(200, "User found", {
+            {"history", history},
+            {"watchlist", watchlist},
+            {"sold", sold},
+            {"bids", bids}
+        });
+    });
+    //--------------------------------LISTINGS API ENDPOINTS--------------------------------
 
     // create some dummy items
     for(int i = 0; i < 10; i++) {

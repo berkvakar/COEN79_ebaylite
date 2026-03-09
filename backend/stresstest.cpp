@@ -26,7 +26,7 @@ int main()
 	for(int i = 0; i< 10;i++)
 	{
 		std::string username = "user" + std::to_string(i);
-		users.push_back(User(username, "password", username + "@email.com"));
+		users.push_back(User(username, "password"));
 	}
 	User seller = users[0];
 	for(int i = 0; i<1000;i++)

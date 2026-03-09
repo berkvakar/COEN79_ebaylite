@@ -33,3 +33,11 @@ void User::addSoldItem(Item* item) {
 void User::addBidItem(Item* item) {
     bids.push_back(item);
 }
+
+void User::getHistory() const {
+    return history;
+}
+
+void User::getWatchlist() const {
+    return watchlist;
+}

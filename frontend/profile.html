@@ -11,9 +11,9 @@
     <header>
         <h1>eBay Lite</h1>
 
-        <nav>
-            <a href="/marketplace.html">Listings</a>
-            <a href="/profile.html">Profile</a>
+        <nav class="tab-nav">
+            <a class="tab-link" href="/marketplace.html">Listings</a>
+            <a class="tab-link active" href="/profile.html">Profile</a>
         </nav>
     </header>
 
@@ -28,9 +28,22 @@
         <h3>Auction History</h3>
         <ul id="history"></ul>
 
+        <h3>Sold Items</h3>
+        <ul id="sold"></ul>
+
+        <h3>Bids</h3>
+        <ul id="bids"></ul>
+
+        <div class="profile-actions">
+            <button type="button" class="signout-btn">Sign Out</button>
+            <button type="button" class="delete-account-btn danger-btn">Delete Account</button>
+        </div>
+        <p id="profileActionMessage"></p>
+
     </div>
 
     <script src="profile.js"></script>
+    <script src="auth.js"></script>
 
 </body>
 

@@ -13,7 +13,6 @@ items.forEach(item => {
 const row = document.createElement("tr");
 
 row.innerHTML = `
-<td>${item.id}</td>
 <td>${item.name}</td>
 <td>$${item.bid}</td>
 <td>$${item.buyNow}</td>

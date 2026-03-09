@@ -11,7 +11,6 @@ items.forEach((item, i) => {
 const row = document.createElement("tr");
 
 row.innerHTML = `
-<td>${i}</td>
 <td>${item.name}</td>
 <td>$${item.price}</td>
 <td>$${item.price}</td>

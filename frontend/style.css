@@ -26,6 +26,28 @@ text-decoration:none;
 font-weight:bold;
 }
 
+.tab-nav{
+display:flex;
+gap:8px;
+margin-top:10px;
+border-bottom:2px solid #bbc4ce;
+padding:0 6px;
+text-decoration: none;
+}
+
+.tab-link{
+margin-right:0;
+padding:10px 16px;
+border-radius:10px 10px 0 0;
+background:#e3eaf3;
+font-weight:bold;
+}
+
+.tab-link.active{
+background:#ffffff;
+border-color:#cfd8e3;
+}
+
 .container{
 background:white;
 padding:20px;
@@ -110,4 +132,23 @@ color:white;
 border:none;
 border-radius:4px;
 cursor:pointer;
+}
+
+.signout-btn{
+margin-top:14px;
+}
+
+.profile-actions{
+display:flex;
+gap:10px;
+margin-top:14px;
+}
+
+.danger-btn{
+background:#c62828;
+}
+
+#profileActionMessage{
+margin-top:10px;
+font-weight:bold;
 }
