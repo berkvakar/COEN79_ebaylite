@@ -14,7 +14,7 @@ class Logs {
         std::vector<std::string> logs; // Vector to store all logs
     public:
         void addLog(const std::string& log); // Method to add a log entry
-        std::vector<std::string> print() const; // Method to retrieve all logs
+        void printLogs(); // Method to retrieve all logs
 };
 
 

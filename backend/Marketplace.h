@@ -10,6 +10,7 @@
 #define MARKETPLACE_H
 #include <list>
 #include "Item.h"
+class Logs;
 class Marketplace{
     private:
         std::list<Item> listings; // Vector to store all the items listed in the marketplace
@@ -23,7 +24,7 @@ class Marketplace{
         Marketplace();
         void addItem(const Item& item); // Method to add an item to the marketplace
         std::list<Item> getListings(int sortOption = 0) const; // Method to retrieve all listings in the marketplace
-        void refresh(Userbase& userbase);
+        void refresh(Userbase& userbase, Logs& logs);
 };
 
 #endif // MARKETPLACE_H

@@ -6,18 +6,19 @@
 
 
 #include "Logs.h"
+#include <iostream>
 
 void Logs::addLog(const std::string& log)
 {
 	logs.push_back(log);
 }
 
-std::vector<std::string> Logs::getLogs() const
+void Logs::printLogs()
 {
 	for(const auto& log : logs)
 	{
 		std::cout << log << std::endl;
 	}
+	logs.clear();
 }
 
-std::

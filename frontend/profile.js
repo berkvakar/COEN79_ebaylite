@@ -43,6 +43,7 @@ async function loadProfile() {
   const createListingForm = document.getElementById("createListingForm");
   const cancelCreateListingBtn = document.getElementById("cancelCreateListingBtn");
   const listingExpireDateInput = document.getElementById("listingExpireDate");
+  const printLogsBtn = document.getElementById("printLogsBtn");
 
   usernameLabel.textContent = "@" + currentUser;
   if (createListingBtn) {
@@ -57,6 +58,11 @@ async function loadProfile() {
     cancelCreateListingBtn.onclick = function () {
       createListingForm.classList.add("hidden");
       createListingForm.reset();
+    };
+  }
+  if (printLogsBtn) {
+    printLogsBtn.onclick = async function () {
+      await fetch("http://localhost:18080/logs");
     };
   }
   if (createListingForm) {

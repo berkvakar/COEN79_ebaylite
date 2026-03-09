@@ -5,6 +5,7 @@
 
 
 #include "Marketplace.h"
+#include "Logs.h"
 
 Marketplace::Marketplace() {} //constructor (just init obj)
 
@@ -19,15 +20,17 @@ std::list<Item> Marketplace::getListings(int sortOption) const
 	return listings;				//return no sort
 }
 
-void Marketplace::refresh(Userbase& userbase) {
+void Marketplace::refresh(Userbase& userbase, Logs& logs) {
 	//check if any items are expired or sold to remove them from marketplace close auction should handle all of the user logic
 	for (auto it = listings.begin(); it != listings.end(); ) {
 		if (it->isExpired()) {
+			logs.addLog("Item expired: " + it->getName());
 			it->closeAuction(userbase);
 			it = listings.erase(it);
 			continue;
 		}
 		if (it->isSold()) {
+			logs.addLog("Item deleted: " + it->getName());
 			it = listings.erase(it);
 			continue;
 		}

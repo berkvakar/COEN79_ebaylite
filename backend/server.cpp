@@ -4,6 +4,7 @@
 #include "Marketplace.h"
 #include "Userbase.h"
 #include "Item.h"
+#include "Logs.h"
 #include <string>
 #include <vector>
 #include <list>
@@ -18,6 +19,7 @@ int main() {
     
     Marketplace market;
     Userbase userbase;
+    Logs logs;
 
     // create some dummy users
     for(int i = 0; i < 5; i++) {
@@ -51,7 +53,7 @@ int main() {
 
 	//checks if user exists, creates new user if not, returns 200 if successful, 400 if user already exists
 	CROW_ROUTE(app, "/signup").methods("POST"_method)
-	([&userbase](const crow::request& req) {
+	([&userbase, &logs](const crow::request& req) {
 		auto body = crow::json::load(req.body);
 		std::string username = body["username"].s();
 		std::string password = body["password"].s();
@@ -62,12 +64,13 @@ int main() {
 		//create new user
 		User newUser(username, password);
 		userbase.addUser(newUser);
+		logs.addLog("Account created: " + username);
 		return crow::response(200, "User created successfully");
 	});
 	
 	//deletes user, returns 200 if successful, 400 if user does not exist
 	CROW_ROUTE(app, "/deleteUser").methods("DELETE"_method)
-	([&userbase](const crow::request& req) {
+	([&userbase, &logs](const crow::request& req) {
 		auto body = crow::json::load(req.body);
 		std::string username = body["username"].s();
         //check if user exists
@@ -75,6 +78,7 @@ int main() {
 			return crow::response(400, "User does not exist");
 		}
 		userbase.removeUser(username);
+		logs.addLog("Account deleted: " + username);
 		return crow::response(200, "User deleted successfully");
 	});
 
@@ -149,8 +153,8 @@ int main() {
 
     // API: return all listings
     CROW_ROUTE(app, "/listingsAPI")
-    ([&market, &userbase]() {
-        market.refresh(userbase);
+    ([&market, &userbase, &logs]() {
+        market.refresh(userbase, logs);
         crow::json::wvalue results;
 
         std::list<Item> items = market.getListings();
@@ -170,7 +174,7 @@ int main() {
 
     // API: add item
     CROW_ROUTE(app, "/addItem").methods("POST"_method)
-    ([&market](const crow::request& req) {
+    ([&market, &logs](const crow::request& req) {
 
         auto body = crow::json::load(req.body);
 
@@ -193,9 +197,16 @@ int main() {
         Item newItem(name, description, price, seller, endTime);
 
         market.addItem(newItem);
+        logs.addLog("Item created: " + name);
         
 
         return crow::response(200, "Item added");
+    });
+
+    CROW_ROUTE(app, "/logs").methods("GET"_method)
+    ([&logs]() {
+        logs.printLogs();
+        return crow::response(200, "Logs printed");
     });
 
     app.port(18080).multithreaded().run();

@@ -186,3 +186,10 @@ background:#c62828;
 margin-top:10px;
 font-weight:bold;
 }
+
+.print-logs-btn{
+position:fixed;
+left:20px;
+bottom:20px;
+z-index:1000;
+}
