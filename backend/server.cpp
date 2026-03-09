@@ -92,30 +92,34 @@ int main() {
             return crow::response(404, "User does not exist");
         }
 
-        auto listings = market.getListings();
         crow::json::wvalue profile;
         profile["username"] = username;
-
-        crow::json::wvalue::list history;
-        crow::json::wvalue::list watchlist;
-        crow::json::wvalue::list sold;
-        crow::json::wvalue::list bids;
 
         User* user = userbase.getUser(username);
         if(user == nullptr) {
             return crow::response(404, "User does not exist");
-        }else{
-            history = user->getHistory();
-            watchlist = user->getWatchlist();
-            sold = user->getSold();
-            bids = user->getBids();
         }
-        return crow::response(200, "User found", {
-            {"history", history},
-            {"watchlist", watchlist},
-            {"sold", sold},
-            {"bids", bids}
-        });
+
+        auto toJsonList = [](const std::vector<Item*>& items) {
+            crow::json::wvalue::list out;
+            for (const auto* item : items) {
+                crow::json::wvalue entry;
+                if (item != nullptr) {
+                    entry["name"] = item->getName();
+                    entry["description"] = item->getDescription();
+                    entry["price"] = item->getBuynowPrice();
+                }
+                out.push_back(std::move(entry));
+            }
+            return out;
+        };
+
+        profile["history"] = toJsonList(user->getHistory());
+        profile["watchlist"] = toJsonList(user->getWatchlist());
+        profile["sold"] = toJsonList(user->getSold());
+        profile["bids"] = toJsonList(user->getBids());
+
+        return crow::response{profile};
     });
     //--------------------------------LISTINGS API ENDPOINTS--------------------------------
 

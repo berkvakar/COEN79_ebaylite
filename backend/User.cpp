@@ -34,10 +34,18 @@ void User::addBidItem(Item* item) {
     bids.push_back(item);
 }
 
-void User::getHistory() const {
+const std::vector<Item*>& User::getHistory() const {
     return history;
 }
 
-void User::getWatchlist() const {
+const std::vector<Item*>& User::getWatchlist() const {
     return watchlist;
+}
+
+const std::vector<Item*>& User::getSold() const {
+    return sold;
+}
+
+const std::vector<Item*>& User::getBids() const {
+    return bids;
 }

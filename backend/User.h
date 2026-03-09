@@ -37,6 +37,11 @@ public:
 
     void addSoldItem(Item* item);
     void addBidItem(Item* item);
+
+    const std::vector<Item*>& getHistory() const;
+    const std::vector<Item*>& getWatchlist() const;
+    const std::vector<Item*>& getSold() const;
+    const std::vector<Item*>& getBids() const;
 };
 
 #endif
