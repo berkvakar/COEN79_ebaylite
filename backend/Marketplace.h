@@ -23,6 +23,7 @@ class Marketplace{
         Marketplace();
         void addItem(const Item& item); // Method to add an item to the marketplace
         std::vector<Item> getListings(int sortOption = 0) const; // Method to retrieve all listings in the marketplace
+        void refresh();
 };
 
 #endif // MARKETPLACE_H

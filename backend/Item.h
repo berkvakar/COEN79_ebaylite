@@ -9,6 +9,7 @@
 class Item {
 
 private:
+    int id;
     std::string name;
     std::string description;
     double buynow_price;

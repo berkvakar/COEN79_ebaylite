@@ -35,14 +35,18 @@ void User::addBidItem(Item* item) {
 }
 
 const std::vector<Item*>& User::getHistory() const {
+    //bid amount, Item name, did you buy it
+    //vector<arr[3]>?
     return history;
 }
 
 const std::vector<Item*>& User::getWatchlist() const {
+    //item->id, name
     return watchlist;
 }
 
 const std::vector<Item*>& User::getSold() const {
+    //id , price
     return sold;
 }
 
