@@ -73,16 +73,17 @@ bool Item::isExpired() const {
 }
 
 void Item::closeAuction() {
-    sold = true;
-    /**
-    * 1. get all bids
-    * 2. if there are no bids return 
-    * 3. if there are bids, sell to highest bidder
-    * 4. add item to seller's sold items
-    * 5. add item to highest bidder's auction history and remove from its bids list
-    */
-    double highestBid = bidsList.getHighestBid();
-    if(highestBid >= buynow_price) {
-        sold = true;
-    }
+   if(sold) {
+           return;
+   }
+           
+double highestBid = bidsList.getHighestBid();
+if(highestBid >= buynow_price) {
+sold = true;
+return;
+}
+if(!bidsList.isEmpty()) {
+sold = true;
+}
+    
 }
