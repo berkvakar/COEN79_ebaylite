@@ -14,5 +14,10 @@ void Logs::addLog(const std::string& log)
 
 std::vector<std::string> Logs::getLogs() const
 {
-	return logs;
+	for(const auto& log : logs)
+	{
+		std::cout << log << std::endl;
+	}
 }
+
+std::

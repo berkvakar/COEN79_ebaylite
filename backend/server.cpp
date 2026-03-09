@@ -140,6 +140,12 @@ int main() {
 
         market.addItem(item);
     }
+     User dummyuser(
+            "seller" + std::to_string(19),
+            "password"
+        );
+    Item test("abcs", "a", 100, dummyuser,std::time(nullptr) + 2 * 60);
+    market.addItem(test);
 
     // API: return all listings
     CROW_ROUTE(app, "/listingsAPI")
@@ -187,6 +193,7 @@ int main() {
         Item newItem(name, description, price, seller, endTime);
 
         market.addItem(newItem);
+        
 
         return crow::response(200, "Item added");
     });
