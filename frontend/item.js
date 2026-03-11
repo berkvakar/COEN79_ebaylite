@@ -204,6 +204,20 @@ async function placeBid()
 		return;
 	}
 
+	// Refresh first to avoid stale UI bids causing preventable 400 responses.
+	const refreshed = await refreshCurrentItemFromBackend();
+	if(!refreshed)
+	{
+		alert("Could not refresh item state.");
+		return;
+	}
+
+	if(amount <= Number(window.currentItem.highestBid))
+	{
+		alert("Bid must be higher than the latest current bid.");
+		return;
+	}
+
 	// send bid to backen
 	const bidResponse = await fetch("http://localhost:18080/bid", {
 		method: "POST",
@@ -216,7 +230,8 @@ async function placeBid()
 	});
 	if(!bidResponse.ok)
 	{
-		alert("Bid failed.");
+		const errText = await bidResponse.text();
+		alert(`Bid failed: ${errText || "Unknown error"}`);
 		return;
 	}
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>eBay Lite Stress Test</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>eBay Lite</h1>
+        <nav class="tab-nav">
+            <a class="tab-link" href="/marketplace.html">Listings</a>
+            <a class="tab-link" href="/profile.html">Profile</a>
+            <a class="tab-link active" href="/stressTest.html">Stress Test</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Stress Test</h2>
+        <section class="stress-test-panel">
+            <div class="stress-test-controls">
+                <input id="stressItemCount" type="number" min="1" max="5000" value="1000" placeholder="Items">
+                <input id="stressUserCount" type="number" min="1" max="500" value="10" placeholder="Users">
+                <input id="stressBidsPerItem" type="number" min="1" max="20" value="3" placeholder="Bids per item">
+                <button id="runStressTestBtn" type="button">Run Stress Test</button>
+            </div>
+            <p id="stressTestMessage"></p>
+            <div id="stressTestStats" class="stress-test-stats hidden"></div>
+        </section>
+    </div>
+
+    <script src="stressTest.js"></script>
+    <script src="auth.js"></script>
+</body>
+
+</html>

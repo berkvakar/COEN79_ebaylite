@@ -29,6 +29,8 @@ font-weight:bold;
 .tab-nav{
 display:flex;
 gap:8px;
+flex-wrap:wrap;
+justify-content:center;
 margin-top:10px;
 border-bottom:2px solid #bbc4ce;
 padding:0 6px;
@@ -41,6 +43,7 @@ padding:10px 16px;
 border-radius:10px 10px 0 0;
 background:#e3eaf3;
 font-weight:bold;
+white-space:nowrap;
 }
 
 .tab-link.active{
@@ -192,4 +195,47 @@ position:fixed;
 left:20px;
 bottom:20px;
 z-index:1000;
+}
+
+.stress-test-panel{
+margin-bottom:16px;
+padding:12px;
+border:1px solid #d6dde7;
+border-radius:8px;
+background:#f8fbff;
+}
+
+.stress-test-panel h3{
+margin-top:0;
+margin-bottom:10px;
+}
+
+.stress-test-controls{
+display:flex;
+gap:8px;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.stress-test-controls input{
+padding:8px;
+border:1px solid #ccc;
+border-radius:6px;
+width:140px;
+}
+
+.stress-test-stats{
+display:grid;
+grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+gap:6px;
+margin-top:10px;
+padding:10px;
+border-radius:6px;
+background:white;
+border:1px solid #dfe5ec;
+}
+
+#stressTestMessage{
+margin:10px 0 0;
+font-weight:bold;
 }

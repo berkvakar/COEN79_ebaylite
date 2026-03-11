@@ -24,7 +24,7 @@ function formatMoney(amount) {
     return `$${num.toFixed(2)}`;
 }
 
-window.onload = function () {
+function loadListings() {
     fetch("http://localhost:18080/listingsAPI")
         .then((response) => response.json())
         .then((data) => {
@@ -49,4 +49,8 @@ window.onload = function () {
             });
         })
         .catch((err) => console.log(err));
+}
+
+window.onload = function () {
+    loadListings();
 };
